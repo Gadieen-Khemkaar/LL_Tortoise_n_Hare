@@ -54,9 +54,74 @@ bool hasCycle(ListNode *head) {
 | Space  | O(1) (constant) |
 
 ---
+### 🎯 Find the Starting Point of a Loop in a Linked List
 
-### 🔄 Bonus:
+After detecting a loop using Floyd’s Cycle Detection Algorithm, we can find the node where the loop starts.
 
-* ✅ **Detect if loop exists** ✔️
-* 🎯 **Find the starting node of the loop** (can be added)
-* ✂️ **Remove the loop** (can also be added)
+#### 🔁 How It Works:
+- Detect the meeting point of slow and fast.
+- Move one pointer to the head.
+- Move both pointers one step at a time.
+- They will meet at the **starting node of the loop**.
+
+#### ✅ Code (C++):
+```cpp
+ListNode* detectCycle(ListNode *head) {
+    ListNode *slow = head, *fast = head;
+
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast) {
+            fast = head;
+            while (slow != fast) {
+                slow = slow->next;
+                fast = fast->next;
+            }
+            return slow;
+        }
+    }
+
+    return NULL;
+}
+---
+ 🔓 Removing Loop in Linked List
+
+Once a cycle is detected, we can remove it by:
+
+1. Finding the start of the loop using Floyd’s Algorithm.
+2. Traversing the loop to find the node that links back to the start.
+3. Breaking the cycle by setting `loopNode->next = NULL`.
+
+#### ✂️ Sample Code in C++:
+```cpp
+void removeLoop(ListNode* head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+    // Detect loop
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) break;
+    }
+
+    if (slow != fast) return;
+
+    fast = head;
+
+    if (slow == fast) {
+        while (slow->next != fast)
+            slow = slow->next;
+        slow->next = NULL;
+        return;
+    }
+
+    while (slow->next != fast->next) {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    slow->next = NULL;
+}
